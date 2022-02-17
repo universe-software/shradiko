@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Shradiko APT
+Icon=shradiko
+Categories=Utility;
+Exec=shradiko-apt
+Terminal=false

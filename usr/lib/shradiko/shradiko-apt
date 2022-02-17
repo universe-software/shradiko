@@ -1,0 +1,51 @@
+#!/bin/sh
+# Usage: shradiko-apt DEB_FILE PROGRAM DESKTOP_ENTRY ICON_FILE OUT
+
+if [ "$#" -eq 5 ]
+then
+
+deb="$1"
+program="$2"
+desktop_entry="$3"
+icon="$4"
+out="$5"
+
+mkdir -p ~/.shradiko
+cd ~/.shradiko
+rm -rf AppImage
+rm ubuntu-base-20.04.1-base-amd64.tar.gz
+wget https://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.1-base-amd64.tar.gz
+mkdir -p AppImage/root
+cd AppImage/root
+tar -xf ../../ubuntu-base-20.04.1-base-amd64.tar.gz
+cd ../..
+cp "$deb" AppImage/root/root/package.deb
+cp "$(dirname "$(realpath "$0")")/shradiko-apt-install" AppImage/root/root
+mount --bind /dev AppImage/root/dev
+mount -t proc chroot-proc AppImage/root/proc
+mount --bind /tmp AppImage/root/tmp
+chroot AppImage/root /root/shradiko-apt-install
+umount AppImage/root/dev
+umount AppImage/root/proc
+umount AppImage/root/tmp
+rm -rf AppImage/root/boot
+rm -rf AppImage/root/dev
+rm -r AppImage/root/home
+rm -r AppImage/root/media
+rm -r AppImage/root/mnt
+rm -r AppImage/root/proc
+rm -r AppImage/root/root
+rm -r AppImage/root/run
+rm -r AppImage/root/srv
+rm -r AppImage/root/sys
+rm -r AppImage/root/tmp
+cp "$(dirname "$(realpath "$0")")/AppRun" AppImage
+sed "s/PROGRAM/$program/" "$(dirname "$(realpath "$0")")/shradiko" > AppImage/shradiko
+chmod +x AppImage/shradiko
+cp "$desktop_entry" AppImage
+cp "$icon" AppImage
+appimagetool AppImage "$out"
+
+else
+    echo "Usage: shradiko-apt DEB_FILE PROGRAM DESKTOP_ENTRY ICON_FILE OUT"
+fi

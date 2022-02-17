@@ -1,0 +1,7 @@
+#!/bin/sh
+echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+unset PYTHONPATH
+unset PYTHONHOME
+export DEBIAN_FRONTEND=noninteractive
+apt update
+apt install -y ~/package.deb

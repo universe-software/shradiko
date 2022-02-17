@@ -1,0 +1,2 @@
+#!/bin/sh
+unshare -rm "$(dirname "$(realpath "$0")")/shradiko" "$@"
